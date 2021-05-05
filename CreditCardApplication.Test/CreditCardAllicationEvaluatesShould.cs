@@ -47,9 +47,14 @@ namespace CreditCardApplications.Test
            // mockValidator.Setup(x => x.IsValid(It.Is<string>(numb=>numb.StartsWith("y")))).Returns(true);
           
             //return true if it is in a range
-            mockValidator.Setup(x => x.IsValid(It.IsInRange<string>("a","z",Moq.Range.Inclusive))).Returns(true);
-          
-            
+            //mockValidator.Setup(x => x.IsValid(It.IsInRange<string>("a","z",Moq.Range.Inclusive))).Returns(true);
+
+            //return true if it is in a range
+            mockValidator.Setup(x => x.IsValid(It.IsIn<string>("z", "y", "x"))).Returns(true);
+
+            //return true if it is in a range
+            mockValidator.Setup(x => x.IsValid(It.IsRegex("[a-z]"))).Returns(true);
+
             var sut = new CreditCardApplicationEvaluator(mockValidator.Object);
              var application = new CreditCardApplication { GrossAnnualIncome = 19_999,
             Age=42,FrequentFlyerNumber="x"};
