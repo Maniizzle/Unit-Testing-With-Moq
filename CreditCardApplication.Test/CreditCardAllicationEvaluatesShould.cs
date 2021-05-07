@@ -50,9 +50,9 @@ namespace CreditCardApplications.Test
             //mockValidator.Setup(x => x.IsValid(It.IsInRange<string>("a","z",Moq.Range.Inclusive))).Returns(true);
 
             //return true if it is in a range
-            mockValidator.Setup(x => x.IsValid(It.IsIn<string>("z", "y", "x"))).Returns(true);
+            //mockValidator.Setup(x => x.IsValid(It.IsIn<string>("z", "y", "x"))).Returns(true);
 
-            //return true if it is in a range
+            //return true if it satisfies the regex
             mockValidator.Setup(x => x.IsValid(It.IsRegex("[a-z]"))).Returns(true);
 
             var sut = new CreditCardApplicationEvaluator(mockValidator.Object);
@@ -61,6 +61,20 @@ namespace CreditCardApplications.Test
 
             CreditCardApplicationDecision decision = sut.Evaluate(application);
             Assert.Equal(CreditCardApplicationDecision.AutoDeclined, decision);
+        }
+
+        [Fact]
+        public void ReferInvalidFrequentApplications()
+        {
+            Mock<IFrequentFlyerNumberValidator> mockValidator = new Mock<IFrequentFlyerNumberValidator>(MockBehavior.Strict);
+            mockValidator.Setup(x => x.IsValid(It.IsAny<string>())).Returns(false);
+
+
+            var sut = new CreditCardApplicationEvaluator(mockValidator.Object);
+            var application = new CreditCardApplication { Age = 19 };
+
+            CreditCardApplicationDecision decision = sut.Evaluate(application);
+            Assert.Equal(CreditCardApplicationDecision.ReferredToHuman, decision);
         }
     }
 }
