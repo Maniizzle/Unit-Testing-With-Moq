@@ -35,6 +35,33 @@
             }
 
             return CreditCardApplicationDecision.ReferredToHuman;
-        }       
+        }
+        
+        public CreditCardApplicationDecision EvaluateUsingOut(CreditCardApplication application)
+        {
+            if (application.GrossAnnualIncome >= HighIncomeThreshold)
+            {
+
+            }
+
+            validator.IsValid(application.FrequentFlyerNumber, out var isValiFrequentFlyNumber);
+
+            if (!isValiFrequentFlyNumber)
+            {
+                return CreditCardApplicationDecision.ReferredToHuman;
+            }
+            if (application.Age <= AutoReferralMaxAge)
+            {
+                return CreditCardApplicationDecision.ReferredToHuman;
+            }
+
+            if (application.GrossAnnualIncome < LowIncomeThreshold)
+            {
+                return CreditCardApplicationDecision.AutoDeclined;
+            }
+        }
+
+
+
     }
 }
