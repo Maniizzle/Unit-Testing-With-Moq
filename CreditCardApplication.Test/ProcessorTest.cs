@@ -19,7 +19,7 @@ namespace CreditCardApplications.Test
             var sut = new Processor(mockValidator.Object);
             var result=sut.Process(person);
 
-            Assert.True(result);
+            Assert.False(result);
         }
         [Fact]
         public void ProcessorShouldMatchAnyCompatibleType()
@@ -27,6 +27,8 @@ namespace CreditCardApplications.Test
             Mock<IGateway> mockValidator = new Mock<IGateway>(MockBehavior.Strict);
             var person = new Person();
             var person2 = new Person();
+
+            //return -1 regardless of the person instance passed
             mockValidator.Setup(x => x.Execute(ref It.Ref<Person>.IsAny)).Returns(-1);
 
             var sut = new Processor(mockValidator.Object);
@@ -35,7 +37,7 @@ namespace CreditCardApplications.Test
 
             Assert.Equal(result, result2);
 
-            Assert.True(result);
+            Assert.False(result);
         }
 
     }
