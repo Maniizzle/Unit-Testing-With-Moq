@@ -23,6 +23,8 @@
             {
                 return CreditCardApplicationDecision.ReferredToHuman;
             }
+
+            validator.ValidationMode = application.Age >= 30 ? ValidationMode.Detailed : ValidationMode.Quick;
             //if (validator.LicenseKey == "EXPIRED")
             //{
             //    return CreditCardApplicationDecision.ReferredToHuman;
