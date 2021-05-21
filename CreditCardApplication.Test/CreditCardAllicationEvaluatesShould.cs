@@ -168,6 +168,92 @@ namespace CreditCardApplications.Test
            sut.Evaluate(application);
             Assert.Equal(ValidationMode.Detailed, mockValidator.Object.ValidationMode);
         }
+        [Fact]
+        public void ValidateFrequentFlyerNumberForLowIncomeApplications()
+        {
+            Mock<IFrequentFlyerNumberValidator> mockValidator = new Mock<IFrequentFlyerNumberValidator>();
 
+
+            mockValidator.Setup(x => x.ServiceInformation.License.LicenseKey).Returns("OK");
+
+            var sut = new CreditCardApplicationEvaluator(mockValidator.Object);
+            //var application = new CreditCardApplication();
+            var application = new CreditCardApplication { FrequentFlyerNumber="q"};
+
+            sut.Evaluate(application);
+
+            //verify if isvalid was called with a value of null
+            //mockValidator.Verify(x => x.IsValid(null));
+            //verify if isvalid was called with any value
+            //mockValidator.Verify(x => x.IsValid(It.IsAny<string>()));
+            
+            //verify if isvalid was called with value "q" and passing custom message
+           mockValidator.Verify(x => x.IsValid("q"),"Frequent flyer numbers should bee validated");
+           
+            //verify if IsValid method was called once
+           // mockValidator.Verify(x => x.IsValid(It.IsAny<string>()), Times.Once);
+
+        }
+        [Fact]
+        public void NotValidateFrequentFlyerNumberForHighIncomeApplications()
+        {
+            Mock<IFrequentFlyerNumberValidator> mockValidator = new Mock<IFrequentFlyerNumberValidator>();
+
+
+            mockValidator.Setup(x => x.ServiceInformation.License.LicenseKey).Returns("OK");
+
+            var sut = new CreditCardApplicationEvaluator(mockValidator.Object);
+            //var application = new CreditCardApplication();
+            var application = new CreditCardApplication { GrossAnnualIncome = 100_000 };
+
+            sut.Evaluate(application);
+            mockValidator.Verify(x => x.IsValid(It.IsAny<string>()), Times.Never);
+
+            //verify if isvalid was called with a value of null
+            //mockValidator.Verify(x => x.IsValid(null));
+            //verify if isvalid was called with any value
+            //mockValidator.Verify(x => x.IsValid(It.IsAny<string>()));
+
+            //verify if isvalid was called with value "q" and passing custom message
+            //mockValidator.Verify(x => x.IsValid("q"), "Frequent flyer numbers should bee validated");
+        }
+
+        [Fact]
+        public void CheckLicenseKeyForLowIncomeApplications()
+        {
+            Mock<IFrequentFlyerNumberValidator> mockValidator = new Mock<IFrequentFlyerNumberValidator>();
+
+
+            mockValidator.Setup(x => x.ServiceInformation.License.LicenseKey).Returns("OK");
+
+            var sut = new CreditCardApplicationEvaluator(mockValidator.Object);
+            //var application = new CreditCardApplication();
+            var application = new CreditCardApplication { GrossAnnualIncome = 99_000 };
+
+            sut.Evaluate(application);
+            //verify that a property was read
+            mockValidator.VerifyGet(x => x.ServiceInformation.License.LicenseKey);//  Times.Never);
+
+            }
+
+        [Fact]
+        public void SetDetailedLookUpFOrOlderApplications()
+        {
+            Mock<IFrequentFlyerNumberValidator> mockValidator = new Mock<IFrequentFlyerNumberValidator>();
+
+
+            mockValidator.Setup(x => x.ServiceInformation.License.LicenseKey).Returns("OK");
+
+            var sut = new CreditCardApplicationEvaluator(mockValidator.Object);
+            //var application = new CreditCardApplication();
+            var application = new CreditCardApplication { Age = 30 };
+
+            sut.Evaluate(application);
+            //verify that a property was set to validtaion.Detailed
+            mockValidator.VerifySet(x => x.ValidationMode=ValidationMode.Detailed);//  Times.Never);
+             //verify that a property was set 
+            //mockValidator.VerifySet(x => x.ValidationMode=It.IsAny<ValidationMode>());//  Times.Never);
+
+        }
     }
 }
