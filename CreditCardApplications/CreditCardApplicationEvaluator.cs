@@ -1,10 +1,18 @@
-﻿namespace CreditCardApplications
+﻿using System;
+
+namespace CreditCardApplications
 {
     public class CreditCardApplicationEvaluator
     {
         public CreditCardApplicationEvaluator(IFrequentFlyerNumberValidator validator)
         {
             this.validator = validator;
+            this.validator.ValidatorLookUpPerformed += ValidatorLookupPerformed;
+        }
+
+        private void ValidatorLookupPerformed(object sender, EventArgs e)
+        {
+            ValidatorLookUpCount++;
         }
 
         private const int AutoReferralMaxAge = 20;
