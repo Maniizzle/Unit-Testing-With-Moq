@@ -10,6 +10,8 @@
         private const int AutoReferralMaxAge = 20;
         private const int HighIncomeThreshold = 100_000;
         private const int LowIncomeThreshold = 20_000;
+
+        public int ValidatorLookUpCount { get;private set; }
         private readonly IFrequentFlyerNumberValidator validator;
 
         public CreditCardApplicationDecision Evaluate(CreditCardApplication application)
@@ -29,8 +31,17 @@
             //{
             //    return CreditCardApplicationDecision.ReferredToHuman;
             //}
+            bool isValidFreuentFlyMember;
+            try
+            {
+                isValidFreuentFlyMember = validator.IsValid(application.FrequentFlyerNumber);
 
-            var isValidFreuentFlyMember = validator.IsValid(application.FrequentFlyerNumber);
+            }
+            catch (System.Exception)
+            {
+
+                return CreditCardApplicationDecision.ReferredToHuman;
+            }
             if (!isValidFreuentFlyMember)
             {
                 return CreditCardApplicationDecision.ReferredToHuman;
