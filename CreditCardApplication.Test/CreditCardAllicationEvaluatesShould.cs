@@ -2,6 +2,9 @@ using CreditCardApplications;
 using System;
 using Xunit;
 using Moq;
+//allow us to mock protected man
+using Moq.Protected;
+using System.Collections.Generic;
 
 namespace CreditCardApplications.Test
 {
@@ -319,13 +322,82 @@ namespace CreditCardApplications.Test
             //var application = new CreditCardApplication();
             var application = new CreditCardApplication { Age = 25};
 
+            //first return value
             CreditCardApplicationDecision firstDecision = sut.Evaluate(application);
             Assert.Equal(CreditCardApplicationDecision.ReferredToHuman, firstDecision);
-                
+             
+            //second return value
             CreditCardApplicationDecision secondDecision = sut.Evaluate(application);
             Assert.Equal(CreditCardApplicationDecision.AutoDeclined, secondDecision);
                 
         }
+
+
+        [Fact]
+        public void ReferInvalidFrequentFlyerApplications_MultipleCallSequence()
+        {
+            Mock<IFrequentFlyerNumberValidator> mockValidator = new Mock<IFrequentFlyerNumberValidator>();
+
+
+            mockValidator.Setup(x => x.ServiceInformation.License.LicenseKey).Returns("OK");
+
+            var frequentFlyNumbersPassed = new List<string>();
+            //will return several sequential value
+            mockValidator.SetupSequence(x => x.IsValid(Capture.In(frequentFlyNumbersPassed)));
+                
+            var sut = new CreditCardApplicationEvaluator(mockValidator.Object);
+            //var application = new CreditCardApplication();
+            var application = new CreditCardApplication { Age = 25,FrequentFlyerNumber="aa" };
+            var application2 = new CreditCardApplication { Age = 25,FrequentFlyerNumber="bb" };
+            var application3 = new CreditCardApplication { Age = 25,FrequentFlyerNumber="cc" };
+
+            //first return value
+             sut.Evaluate(application);
+             sut.Evaluate(application2);
+             sut.Evaluate(application3);
+
+            //second return value
+            Assert.Equal(new List<string> {"aa","bb","cc" }, frequentFlyNumbersPassed);
+
+        }
+
+
+        [Fact]
+        public void ReferFraudRisk()
+        {
+            Mock<IFrequentFlyerNumberValidator> mockValidator = new Mock<IFrequentFlyerNumberValidator>();
+            Mock<FraudLookUp> mockFraudLookUp = new Mock<FraudLookUp>();
+
+
+            mockValidator.Setup(x => x.ServiceInformation.License.LicenseKey).Returns("OK");
+            //mockFraudLookUp.Setup(x => x.IsFraudRisk(It.IsAny<CreditCardApplication>())).Returns(true);
+            
+            mockFraudLookUp.Protected().Setup<bool>("CheckAppplication",ItExpr.IsAny<CreditCardApplication>()).Returns(true);
+
+
+            var frequentFlyNumbersPassed = new List<string>();
+            mockValidator.SetupSequence(x => x.IsValid(Capture.In(frequentFlyNumbersPassed))).Returns(true);
+
+            var sut = new CreditCardApplicationEvaluator(mockValidator.Object, mockFraudLookUp.Object);
+            var application = new CreditCardApplication();
+            CreditCardApplicationDecision decision = sut.Evaluate(application);
+
+             Assert.Equal(CreditCardApplicationDecision.ReferredToHumanFraudRisk, decision);
+
+            //var application = new CreditCardApplication { Age = 25, FrequentFlyerNumber = "aa" };
+            //var application2 = new CreditCardApplication { Age = 25, FrequentFlyerNumber = "bb" };
+            //var application3 = new CreditCardApplication { Age = 25, FrequentFlyerNumber = "cc" };
+
+            ////first return value
+            //sut.Evaluate(application);
+            //sut.Evaluate(application2);
+            //sut.Evaluate(application3);
+
+            //second return value
+            // Assert.Equal(new List<string> { "aa", "bb", "cc" }, frequentFlyNumbersPassed);
+
+        }
+
 
     }
 }

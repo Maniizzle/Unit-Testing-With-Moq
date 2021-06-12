@@ -19,6 +19,8 @@ namespace CreditCardApplications
     /// </summary>
     public class FrequentFlyerNumberValidatorService : IFrequentFlyerNumberValidator
     {
+        public event EventHandler ValidatorLookUpPerformed;
+
         public bool IsValid(string frequentFlyerNumber)
         {
             throw new NotImplementedException("Simulate this real dependency being hard to use");

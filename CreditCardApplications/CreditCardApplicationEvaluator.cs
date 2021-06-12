@@ -4,9 +4,10 @@ namespace CreditCardApplications
 {
     public class CreditCardApplicationEvaluator
     {
-        public CreditCardApplicationEvaluator(IFrequentFlyerNumberValidator validator)
+        public CreditCardApplicationEvaluator(IFrequentFlyerNumberValidator validator, FraudLookUp lookUp=null)
         {
             this.validator = validator;
+            this.fraudLookUp = lookUp;
             this.validator.ValidatorLookUpPerformed += ValidatorLookupPerformed;
         }
 
@@ -21,9 +22,14 @@ namespace CreditCardApplications
 
         public int ValidatorLookUpCount { get;private set; }
         private readonly IFrequentFlyerNumberValidator validator;
+        private readonly FraudLookUp fraudLookUp;
 
         public CreditCardApplicationDecision Evaluate(CreditCardApplication application)
         {
+            if (fraudLookUp!=null && fraudLookUp.IsFraudRisk(application))
+            {
+                return CreditCardApplicationDecision.ReferredToHumanFraudRisk;
+            }
             if (application.GrossAnnualIncome >= HighIncomeThreshold)
             {
                 return CreditCardApplicationDecision.AutoAccepted;
