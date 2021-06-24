@@ -5,7 +5,13 @@ VisualStudioVersion = 16.0.31005.135
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CreditCardApplications", "CreditCardApplications\CreditCardApplications.csproj", "{4DBC2448-2B42-4466-B357-AFC0259F370D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CreditCardApplications.Test", "CreditCardApplication.Test\CreditCardApplications.Test.csproj", "{85D00BE7-9145-46BD-A469-379543A3E9DC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CreditCardApplications.Test", "CreditCardApplication.Test\CreditCardApplications.Test.csproj", "{85D00BE7-9145-46BD-A469-379543A3E9DC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVCTestApp", "MVCTestApp\MVCTestApp.csproj", "{2658F780-7708-49F8-880D-FCB368F4D45F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CoreCode", "CoreCode", "{4EDF69A7-F623-45DA-9864-B4078092C5BD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{4BEABB1A-2B43-4A59-8595-A9F07C535899}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,9 +27,18 @@ Global
 		{85D00BE7-9145-46BD-A469-379543A3E9DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{85D00BE7-9145-46BD-A469-379543A3E9DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{85D00BE7-9145-46BD-A469-379543A3E9DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2658F780-7708-49F8-880D-FCB368F4D45F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2658F780-7708-49F8-880D-FCB368F4D45F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2658F780-7708-49F8-880D-FCB368F4D45F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2658F780-7708-49F8-880D-FCB368F4D45F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{4DBC2448-2B42-4466-B357-AFC0259F370D} = {4EDF69A7-F623-45DA-9864-B4078092C5BD}
+		{85D00BE7-9145-46BD-A469-379543A3E9DC} = {4BEABB1A-2B43-4A59-8595-A9F07C535899}
+		{2658F780-7708-49F8-880D-FCB368F4D45F} = {4EDF69A7-F623-45DA-9864-B4078092C5BD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9B2C587E-8C63-4F5C-A07C-5B784047C77F}
